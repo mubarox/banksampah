@@ -10,6 +10,7 @@ import id.banksampah.app.model.Customer;
 import id.banksampah.app.service.TrashListService;
 import id.banksampah.app.Deposit;
 import id.banksampah.app.core.ImpCustomer;
+import id.banksampah.app.core.ImpTrashList;
 import id.banksampah.app.model.TrashList;
 import javax.swing.*;
 import java.awt.*;
@@ -35,23 +36,24 @@ public class DepositView extends JFrame implements ImpCustomer {
     private JButton setoran = new JButton("Setor");
     private JTable tabel1 = new JTable();
     private JScrollPane sp = new JScrollPane(tabel1);
-    
+
     protected String jenis, harga;
-    
-    
+
     public DepositView() {
         super("Form Setor");
-        testing();
         initView();
+        table();
         
+        handleSetoranButtonClick();
     }
 
-    public void testing() {
+    public void table() {
         // tabel
         TrashListService TrashListService = new TrashListService();
         List<TrashList> trashList = TrashListService.getAll();;
-        
-        DefaultTableModel model = new DefaultTableModel();
+
+//        DefaultTableModel model = new DefaultTableModel();
+        DefaultTableModel model = (DefaultTableModel) tabel1.getModel();
         Object[] columns = new Object[3];
         columns[0] = "Id sampah";
         columns[1] = "jenis";
@@ -81,13 +83,11 @@ public class DepositView extends JFrame implements ImpCustomer {
         constraints.gridy = 0;
         newPanel.add(labelDaftar, constraints);
 
-        
         constraints.gridx = 0;
         constraints.gridy = 1;
         constraints.anchor = GridBagConstraints.CENTER;
         newPanel.add(sp, constraints);
-        
-        
+
         constraints.gridx = 0;
         constraints.gridy = 2;
         newPanel.add(labelJumlah, constraints);
@@ -95,12 +95,7 @@ public class DepositView extends JFrame implements ImpCustomer {
         constraints.gridx = 1;
         newPanel.add(textJumlah, constraints);
 
-        constraints.gridx = 0;
-        constraints.gridy = 3;
-        newPanel.add(labelJenis, constraints);
-
-        constraints.gridx = 1;
-        newPanel.add(textJenis, constraints);
+       
 
         constraints.gridx = 0;
         constraints.gridy = 5;
@@ -117,20 +112,32 @@ public class DepositView extends JFrame implements ImpCustomer {
 
     }
 
-    private class calculator implements ActionListener {
+    private void handleSetoranButtonClick() {
+        setoran.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                int rowIndex = tabel1.getSelectedRow();
+                int harga =  Integer.parseInt(tabel1.getModel().getValueAt(rowIndex, 2).toString());
+                int jumlah = Integer.parseInt(textJumlah.getText());
+                JOptionPane.showMessageDialog(null, "Total harganya adalah " + (harga * jumlah));
 
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            try {
-                int a,b,c;
-                a =Integer.parseInt(textJumlah.getText()) ;
-                b =Integer.parseInt(textJenis.getText());
-                c = a*b;
-            } catch (Exception e) {
+//                statusLabel.setText("Ok Button is clicked here");
             }
-        }
+        });
     }
 
+//    private class calculator implements ActionListener {
+//
+//        @Override
+//        public void actionPerformed(ActionEvent e) {
+//            try {
+//                int a,b,c;
+//                a =Integer.parseInt() ;
+//                b =Integer.parseInt();
+//                c = a*b;
+//            } catch (Exception e) {
+//            }
+//        }
+//    }
     @Override
     public boolean Payment() {
         return false;
